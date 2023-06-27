@@ -1,1 +1,2 @@
-print('Hello World')
+
+writeFile("../test2.txt","blablabla",() => {})

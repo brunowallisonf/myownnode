@@ -7,6 +7,9 @@
 
 uv_loop_t *DEFAULT_LOOP = uv_default_loop();
 
+#include "./timer.hpp"
+#include "./file-reader.hpp"
+#include "./file-writer.hpp"
 class Capivara
 {
 private:
@@ -45,6 +48,8 @@ private:
 
             // Convert the result to an UTF8 string and print it.
             v8::String::Utf8Value utf8(this->isolate, result);
+
+
 
             // fprintf(stderr, "result %s\n", *utf8);
             WaitForEvents();
@@ -101,12 +106,24 @@ public:
         // Create a stack-allocated handle scope.
         v8::HandleScope handle_scope(this->isolate);
 
+
         // Create a template for the global object.
         v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
 
+        Timer timer;
+        timer.Initialize(DEFAULT_LOOP);
+        
+        FileReader fr;
+        fr.Initialize(DEFAULT_LOOP);
+
+        FileWriter fw;
+        fw.Initialize(DEFAULT_LOOP);
+
         // Bind the global 'print' function to the C++ Print callback.
         global->Set(isolate, "print", v8::FunctionTemplate::New(isolate, Print));
-
+        global->Set(isolate, "timeout",v8::FunctionTemplate::New(isolate, timer.Timeout));
+        global->Set(isolate, "readFile",v8::FunctionTemplate::New(isolate, fr.ReadFile));
+        global->Set(isolate, "writeFile",v8::FunctionTemplate::New(isolate, fw.WriteFile));
         // Create a new context.
         this->context = v8::Context::New(this->isolate, NULL, global);
 
