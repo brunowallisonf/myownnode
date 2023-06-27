@@ -28,7 +28,7 @@ class FileWriter {
         }
 
 
-    static void handleCallback(char * error, char* data) {
+    static void handleCallback(char * error) {
         v8::Local<v8::Function> callback = v8::Local<v8::Function>::New(writer->isolate, writer->callback);
 
         v8::Local<v8::Value> result;
@@ -37,8 +37,6 @@ class FileWriter {
 
         if(error != NULL){
             resultr[0] = v8_str(error);
-        }else{
-            resultr[1] = v8_str(data);
         }
 
         if(callback->Call(*(writer->context),v8::Undefined(writer->isolate),2,resultr).ToLocal(&result)){
@@ -55,11 +53,11 @@ class FileWriter {
         if (req->result < 0) {
             const char * error = uv_strerror(req->result);
             fprintf(stderr, "error: %s\n", error );
-            handleCallback((char*)error,NULL);
+            handleCallback((char*)error);
         } else if (req->result == 0) {
             uv_fs_close(writer_default_loop, &writerCloseReq, writerOpenReq.result, NULL);
         } else {
-            //handleCallback(NULL,NULL);
+            handleCallback(NULL);
 
         }
     }
@@ -70,7 +68,7 @@ class FileWriter {
         if (req->result < 0) {
             const char * error = uv_strerror(req->result);
             //fprintf(stderr, "error: %s\n", error );
-            handleCallback((char*)error,NULL);
+            handleCallback((char*)error);
         } else {
             v8::String::Utf8Value str(writer->isolate,writer->dataToWrite);
             std::string cppStr(*str);
