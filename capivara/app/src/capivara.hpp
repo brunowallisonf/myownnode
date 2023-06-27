@@ -122,8 +122,8 @@ public:
         // Bind the global 'print' function to the C++ Print callback.
         global->Set(isolate, "print", v8::FunctionTemplate::New(isolate, Print));
         global->Set(isolate, "timeout",v8::FunctionTemplate::New(isolate, timer.Timeout));
-        global->Set(isolate, "readFile",v8::FunctionTemplate::New(isolate, fr.ReadFile));
-        global->Set(isolate, "writeFile",v8::FunctionTemplate::New(isolate, fw.WriteFile));
+        global->Set(isolate, "bfReadFile",v8::FunctionTemplate::New(isolate, fr.ReadFile));
+        global->Set(isolate, "bfWriteFile",v8::FunctionTemplate::New(isolate, fw.WriteFile));
         // Create a new context.
         this->context = v8::Context::New(this->isolate, NULL, global);
 
