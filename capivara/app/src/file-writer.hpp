@@ -74,12 +74,9 @@ class FileWriter {
             std::string cppStr(*str);
             char *buf = new char[cppStr.length() + 1];
             strcpy(buf, cppStr.c_str());
-                
             uv_buf_t iov = uv_buf_init(buf, sizeof(buf));
             iov.len = req->result;
-
             uv_fs_write(writer_default_loop, &writeReq, req->result, &iov, 1 , -1, onWrite);
-            printf("%s","here");
         }
         uv_fs_req_cleanup(req);
     }
